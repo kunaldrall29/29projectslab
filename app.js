@@ -193,27 +193,75 @@
       if (fields[k]) on(fields[k], 'input', function () { clearErr(k); });
     });
 
+    var submitBtn = form.querySelector('button[type="submit"]');
+    var formError = form.querySelector('[data-form-error]');
+    var submitLabel = submitBtn ? submitBtn.textContent : 'Send it to the lab →';
+    var apiBase = (function () {
+      var m = document.querySelector('meta[name="api-base"]');
+      return ((m && m.getAttribute('content')) || '').replace(/\/+$/, '');
+    })();
+    var submitting = false;
+
+    function showFormError(msg) { if (formError) { formError.textContent = msg; formError.style.display = ''; } }
+    function clearFormError() { if (formError) { formError.textContent = ''; formError.style.display = 'none'; } }
+    function setSubmitting(state) {
+      submitting = state;
+      if (!submitBtn) return;
+      submitBtn.disabled = state;
+      submitBtn.style.opacity = state ? '0.6' : '';
+      submitBtn.style.cursor = state ? 'wait' : 'pointer';
+      submitBtn.textContent = state ? 'Sending…' : submitLabel;
+    }
+    function showSuccess() {
+      setSubmitting(false);
+      form.style.display = 'none';
+      success.style.display = 'block';
+      var heading = success.querySelector('[data-success-focus]');
+      if (heading) heading.focus();
+    }
+
     on(form, 'submit', function (ev) {
       ev.preventDefault();
+      if (submitting) return;
+      clearFormError();
       var ok = true;
       if (!fields.build.value.trim()) { showErr('build', 'Tell us what should exist.'); ok = false; }
       if (!fields.contact.value.trim()) { showErr('contact', 'We need a way to reach you.'); ok = false; }
       if (!ok) return;
 
-      // Brief captured from in-session state. Wire to a backend here, e.g.:
-      //   var payload = { handle, contact, build, why, domains: Object.keys(selected).filter(n => selected[n]) };
-      //   fetch('https://formspree.io/f/XXXXXXXX', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
-      form.style.display = 'none';
-      success.style.display = 'block';
-      var heading = success.querySelector('[data-success-focus]');
-      if (heading) heading.focus();
+      var payload = {
+        handle: (document.getElementById('f-handle') || {}).value || '',
+        contact: fields.contact.value,
+        build: fields.build.value,
+        why: (document.getElementById('f-why') || {}).value || '',
+        domains: Object.keys(selected).filter(function (n) { return selected[n]; }),
+        source: 'request-board'
+      };
+
+      // No backend wired yet -> confirm from in-session state (graceful fallback).
+      if (!apiBase) { showSuccess(); return; }
+
+      setSubmitting(true);
+      fetch(apiBase + '/api/briefs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      }).then(function () {
+        showSuccess();
+      }).catch(function () {
+        setSubmitting(false);
+        showFormError('Couldn’t reach the lab — please try again, or email kunaldrall29@gmail.com.');
+      });
     });
 
     var resetBtn = document.getElementById('brief-reset');
     if (resetBtn) on(resetBtn, 'click', function () {
       form.reset();
       each(chips, function (chip) { setChip(chip, false); });
-      clearErr('contact'); clearErr('build');
+      clearErr('contact'); clearErr('build'); clearFormError();
       success.style.display = 'none';
       form.style.display = 'grid';
       if (fields.build) fields.build.focus();
