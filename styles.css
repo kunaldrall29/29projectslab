@@ -1,0 +1,43 @@
+/* ============================================================
+   29projects Lab — Studio Site
+   Compiled from the Claude Design source (design/29projects-lab.dc.html)
+   into a self-contained, framework-free static site.
+   This file holds the global resets, keyframes and responsive rules
+   from the design's <helmet>. Element-level styling stays inline in
+   index.html so the markup remains a 1:1 mirror of the design.
+   ============================================================ */
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#FBF3E7}
+::selection{background:#FF2E63;color:#FBF3E7}
+
+/* Keyboard "skip to content" — visually hidden until focused. */
+.skip-link{position:absolute;left:-9999px;top:0;z-index:10000;background:#181410;color:#FBF3E7;font-family:'Space Mono',monospace;font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;padding:12px 18px;border:2px solid #181410;text-decoration:none}
+.skip-link:focus{left:12px;top:12px;outline:3px solid #2563FF;outline-offset:2px}
+
+@keyframes wipe{0%{transform:scaleX(0);transform-origin:left center}45%{transform:scaleX(1);transform-origin:left center}55%{transform:scaleX(1);transform-origin:right center}100%{transform:scaleX(0);transform-origin:right center}}
+@keyframes flyLeft{0%{transform:translateX(-95vw) rotate(-16deg);opacity:0}55%{opacity:1}78%{transform:translateX(9px) rotate(3deg)}100%{transform:translateX(0) rotate(0);opacity:1}}
+@keyframes flyRight{0%{transform:translateX(95vw) rotate(16deg);opacity:0}55%{opacity:1}78%{transform:translateX(-9px) rotate(-3deg)}100%{transform:translateX(0) rotate(0);opacity:1}}
+@keyframes fadeUp{0%{opacity:0;transform:translateY(22px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes wordSlam{0%{opacity:0;transform:scale(1.7);filter:blur(3px)}60%{opacity:1;transform:scale(.93);filter:blur(0)}100%{opacity:1;transform:scale(1)}}
+@keyframes whipIn{0%{opacity:0;transform:translateX(75vw) skewX(-16deg) scale(.9)}72%{opacity:1;transform:translateX(-10px) skewX(4deg)}100%{opacity:1;transform:translateX(0) skewX(0)}}
+@keyframes pulseBtn{0%{transform:translate(0,0);box-shadow:5px 5px 0 #181410}30%{transform:translate(-4px,-4px);box-shadow:9px 9px 0 #181410}60%{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #181410}100%{transform:translate(0,0);box-shadow:5px 5px 0 #181410}}
+@keyframes marquee{to{transform:translateX(-50%)}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-16px) rotate(-5deg)}}
+@keyframes popIn{0%{transform:scale(0) rotate(-14deg);opacity:0}70%{transform:scale(1.14) rotate(5deg);opacity:1}100%{transform:scale(1) rotate(-3deg);opacity:1}}
+
+/* Safety: once the cold open's entrance window passes, force all intro elements to their resting (visible) state — never leaves content stuck hidden. */
+[data-ready="true"] [data-anim]{animation:none !important;opacity:1 !important;transform:none !important;filter:none !important}
+
+@media (max-width:900px){[data-grid="domains"]{grid-template-columns:repeat(2,1fr)!important}[data-grid="builds"]{grid-template-columns:1fr!important}[data-row="process"]{grid-template-columns:repeat(2,1fr)!important}[data-proc-line]{display:none!important}}
+@media (max-width:640px){[data-nav-links]{display:none!important}[data-grid="domains"]{grid-template-columns:1fr!important}[data-grid="stats"]{grid-template-columns:repeat(2,1fr)!important}[data-row="process"]{grid-template-columns:1fr!important}[data-hero-btns]{flex-direction:column!important;align-items:stretch!important}[data-hero-btns] a{text-align:center!important}[data-form]{grid-template-columns:1fr!important}[data-foot-top]{grid-template-columns:1fr!important;gap:28px!important}[data-foot-cols]{grid-template-columns:repeat(2,1fr)!important}}
+@media (max-width:420px){[data-brand-text]{display:none!important}[data-grid="stats"]{grid-template-columns:1fr!important}}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+  /* Mirror the source: when motion is reduced the cold-open intro never plays. */
+  #intro{display:none!important}
+  [data-reveal]{opacity:1!important;transform:none!important}
+}
