@@ -1,0 +1,26 @@
+{
+  "name": "29projects-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Brief / pitch submission backend for the 29projects Lab Request Board",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node src/index.js",
+    "build": "prisma generate",
+    "postinstall": "prisma generate",
+    "migrate:deploy": "prisma migrate deploy",
+    "migrate:dev": "prisma migrate dev --name init"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.4.1",
+    "prisma": "^5.22.0"
+  }
+}

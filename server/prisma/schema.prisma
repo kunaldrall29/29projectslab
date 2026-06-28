@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// A brief submitted through the Request Board / "Pitch a build" form.
+model Brief {
+  id        String   @id @default(cuid())
+  handle    String?
+  contact   String
+  build     String
+  why       String?
+  domains   String[]
+  source    String?  @default("request-board")
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
